@@ -1,4 +1,4 @@
-/*Autor-CatKucha Date-2019.06 
+/*Author-CatKucha Date-2019.06 
   This script should be used as a component of the camera of your FPS controller*/
 using System.Collections;
 using System.Collections.Generic;
@@ -58,7 +58,7 @@ public class Unity_Tree_Instantiate : MonoBehaviour
                 tree_instantiate_1.transform.localScale = tree_instantiate_1.transform.localScale * (dbh_1/3f); //change DBH height
 
                 int wanted_layer = First_date_sample.layer;
-                Setlayer(tree_instantiate_1, wanted_layer); //change layer of root and first layer of the root
+                Setlayer(tree_instantiate_1, wanted_layer); //change layer of root and its first layer
             }
             if ((status_2 != "No_record") && (dbh_2_string != "No_record"))
             {
@@ -72,7 +72,7 @@ public class Unity_Tree_Instantiate : MonoBehaviour
                 tree_instantiate_2.transform.localScale = tree_instantiate_2.transform.localScale * (dbh_2 / 3f); //change DBH height
 
                 int wanted_layer = Second_date_sample.layer;
-                Setlayer(tree_instantiate_2, wanted_layer); //change layer of root and first layer of the root
+                Setlayer(tree_instantiate_2, wanted_layer); //change layer of root and its first layer
             } 
 
         }
@@ -172,52 +172,37 @@ public class Unity_Tree_Instantiate : MonoBehaviour
         {
             if (Physics.Raycast(ray, out hit, 10f, 1 << 9))  //if the collision happened, this ray bumps into the Gameobject which is 'hit'
             {
-                //Debug.Log(hit.transform.name.GetType());
-                //Debug.Log(hit.transform.name);
-                string unique_ID = hit.transform.name.Replace("_1", "");
-                XmlNodeList xnList = xmlDoc.SelectNodes("/trees/tree/unique_ID[text()= '" + unique_ID + "']");
-                XmlNode node = xnList[0];
-                XmlNode Parent_Node = node.ParentNode;
-                string name_c = Parent_Node["name_c"].InnerText;
-                string name_e = Parent_Node["name_e"].InnerText;
-                string growth_form = Parent_Node["growth_form"].InnerText;
-                string gx_string = Parent_Node["gx"].InnerText;
-                string gy_string = Parent_Node["gy"].InnerText;
-                string date_1 = Parent_Node["date_1"].InnerText;
-                string status_1 = Parent_Node["status_1"].InnerText;
-                string dbh_1_string = Parent_Node["dbh_1"].InnerText;
-
-                string show_box = String.Format("unique_ID: {0}\r\ngx: {1}, gy: {2}\r\nname_c: {3}\r\nname_s: {4}\r\n" +
-                    "growth_form: {5}\r\ndate_1: {6}\r\nstatus_1: {7}\r\ndbh_1: {8}",
-                    unique_ID, gx_string, gy_string, name_c, name_e, growth_form, date_1, status_1, dbh_1_string);
-
-                GUI.Box(new Rect(Input.mousePosition.x, Screen.height - Input.mousePosition.y, 200, 140), show_box);
-                //GUI.Box(new Rect(0, 0, 100, 100), "aaa\r\naa");
+                Show_your_box( "_1");
             }
         }
         else
         {
             if (Physics.Raycast(ray, out hit, 10f, 1 << 10)) 
             {
-                string unique_ID = hit.transform.name.Replace("_2", "");
-                XmlNodeList xnList = xmlDoc.SelectNodes("/trees/tree/unique_ID[text()= '" + unique_ID + "']");
-                XmlNode node = xnList[0];
-                XmlNode Parent_Node = node.ParentNode;
-                string name_c = Parent_Node["name_c"].InnerText;
-                string name_e = Parent_Node["name_e"].InnerText;
-                string growth_form = Parent_Node["growth_form"].InnerText;
-                string gx_string = Parent_Node["gx"].InnerText;
-                string gy_string = Parent_Node["gy"].InnerText;
-                string date_2 = Parent_Node["date_2"].InnerText;
-                string status_2 = Parent_Node["status_2"].InnerText;
-                string dbh_2_string = Parent_Node["dbh_2"].InnerText;
-
-                string show_box = String.Format("unique_ID: {0}\r\ngx: {1}, gy: {2}\r\nname_c: {3}\r\nname_s: {4}\r\n" +
-                    "growth_form: {5}\r\ndate_2: {6}\r\nstatus_2: {7}\r\ndbh_2: {8}",
-                    unique_ID, gx_string, gy_string, name_c, name_e, growth_form, date_2, status_2, dbh_2_string);
-
-                GUI.Box(new Rect(Input.mousePosition.x, Screen.height - Input.mousePosition.y, 200, 140), show_box);
+                Show_your_box("_2");
             }
+        }
+        void Show_your_box(string survey_sequence_underline) //e.g. "_1" or "_2"
+        {
+            //Debug.Log(hit.transform.name.GetType());
+            //Debug.Log(hit.transform.name);
+            string unique_ID = hit.transform.name.Replace(survey_sequence_underline, "");
+            XmlNodeList xnList = xmlDoc.SelectNodes("/trees/tree/unique_ID[text()= '" + unique_ID + "']");
+            XmlNode node = xnList[0];
+            XmlNode Parent_Node = node.ParentNode;
+            string name_c = Parent_Node["name_c"].InnerText;
+            string name_e = Parent_Node["name_e"].InnerText;
+            string growth_form = Parent_Node["growth_form"].InnerText;
+            string gx_string = Parent_Node["gx"].InnerText;
+            string gy_string = Parent_Node["gy"].InnerText;
+            string date = Parent_Node["date"+survey_sequence_underline].InnerText;
+            string status = Parent_Node["status"+survey_sequence_underline].InnerText;
+            string dbh_string = Parent_Node["dbh"+survey_sequence_underline].InnerText;
+
+            string show_box = String.Format("unique_ID: {0}\r\ngx: {1}, gy: {2}\r\nname_c: {3}\r\nname_s: {4}\r\n" +
+                "growth_form: {5}\r\ndate{9}: {6}\r\nstatus{9}: {7}\r\ndbh{9}: {8}",
+                unique_ID, gx_string, gy_string, name_c, name_e, growth_form, date, status, dbh_string, survey_sequence_underline);
+            GUI.Box(new Rect(Input.mousePosition.x, Screen.height - Input.mousePosition.y, 200, 140), show_box);
         }
     }
 }
